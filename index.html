@@ -1,148 +1,116 @@
-<!DOCTYPE html>
-<html lang="pt">
+<!DOCTYPE html><html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Prêmio Especial - Confirme Agora</title>
+  <title>Gire a Roda e Ganhe</title>
   <style>
     body {
-      background: linear-gradient(to bottom, #ffffff, #e0ffe0);
       font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #ffffff, #e6ffe6);
       text-align: center;
-      padding: 30px;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      display: inline-block;
+      padding: 20px;
     }
     h1 {
       color: #4CAF50;
-      font-size: 28px;
+      margin-bottom: 10px;
     }
-    .btn {
-      margin-top: 20px;
-      padding: 15px 30px;
+    #wheel {
+      width: 300px;
+      height: 300px;
+      border: 12px solid #4CAF50;
+      border-radius: 50%;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .segment {
+      width: 50%;
+      height: 100%;
+      position: absolute;
+      transform-origin: 100% 50%;
+      background-color: #8BC34A;
+      color: white;
+      text-align: right;
+      padding-right: 20px;
+      font-weight: bold;
+      line-height: 300px;
+    }
+    #arrow {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid red;
+      margin: 10px auto;
+    }
+    #spinBtn {
       background-color: #4CAF50;
       color: white;
       font-size: 18px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
-      text-decoration: none;
     }
-    .btn:hover {
-      background-color: #45a049;
+    #result {
+      margin-top: 20px;
+      font-size: 24px;
+      color: green;
+      font-weight: bold;
     }
-    .emoji {
-      font-size: 50px;
-    }
-    #cronometro {
-      font-size: 20px;
-      color: red;
-      margin: 10px 0;
-    }
-    .ganhadores {
-      text-align: left;
+    .winners-img {
       margin-top: 30px;
-      background: #f9f9f9;
-      padding: 15px;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    .confete {
-      position: fixed;
-      width: 100%;
-      height: 0;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 9999;
+      max-width: 90%;
+      border: 2px solid #ccc;
+      border-radius: 10px;
     }
   </style>
 </head>
-<body onload="iniciarTudo()">
-  <canvas class="confete" id="confete"></canvas>
-  <div class="container">
-    <div class="emoji">🎉</div>
-    <h1>Parabéns!</h1>
-    <p>Você foi selecionado para receber <strong id="premio">...</strong></p>
-    <div id="cronometro">Tempo restante: <span id="tempo">30</span>s</div>
-    <a href="https://tracking.888africa.com/visit/?bta=36867&brand=888mozambique" class="btn">Receber meu prêmio</a>
+<body>
+  <h1>Gire a Roda e Ganhe!</h1>
+  <div id="arrow"></div>
+  <div id="wheel"></div>
+  <button id="spinBtn">🎯 Clique para Girar</button>
+  <div id="result"></div>  <img src="https://i.imgur.com/0KZQ0nV.png" alt="Ganhadores recentes" class="winners-img">  <script>
+    const premios = [
+      5000, 7500, 8800, 9999, 12500, 15000
+    ];
 
-    <div class="ganhadores">
-      <strong>Ganhadores recentes:</strong><br />
-      <ul id="lista-ganhadores"></ul>
-    </div>
-  </div>
+    const wheel = document.getElementById('wheel');
+    const result = document.getElementById('result');
+    const spinBtn = document.getElementById('spinBtn');
 
-  <script>
-    function gerarPremio() {
-      var premio = Math.floor(Math.random() * 15000) + 5000;
-      document.getElementById("premio").innerText = premio.toLocaleString() + " MTS";
-    }
-
-    function iniciarCronometro() {
-      let tempo = 30;
-      const el = document.getElementById("tempo");
-      const intervalo = setInterval(() => {
-        tempo--;
-        el.textContent = tempo;
-        if (tempo <= 0) {
-          clearInterval(intervalo);
-          el.textContent = "expirado!";
-        }
-      }, 1000);
-    }
-
-    function gerarGanhadores() {
-      const nomes = ["Carlos M.", "Ana P.", "Mário L.", "Tatiana F.", "João K.", "Vera M.", "André T.", "Sandra C."];
-      const ul = document.getElementById("lista-ganhadores");
-      for (let i = 0; i < 5; i++) {
-        const valor = (Math.floor(Math.random() * 10000) + 5000).toLocaleString();
-        const nome = nomes[Math.floor(Math.random() * nomes.length)];
-        const li = document.createElement("li");
-        li.textContent = `${nome} recebeu ${valor} MTS`;
-        ul.appendChild(li);
+    function desenharRoda() {
+      for (let i = 0; i < premios.length; i++) {
+        const segment = document.createElement('div');
+        segment.className = 'segment';
+        segment.style.transform = `rotate(${i * (360 / premios.length)}deg)`;
+        segment.style.backgroundColor = i % 2 === 0 ? '#4CAF50' : '#66BB6A';
+        segment.innerText = premios[i] + ' MTS';
+        wheel.appendChild(segment);
       }
     }
 
-    function iniciarConfetes() {
-      const js = document.createElement("script");
-      js.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js";
-      js.onload = () => {
-        const duration = 3 * 1000;
-        const end = Date.now() + duration;
+    function girarRoda() {
+      spinBtn.disabled = true;
+      const giro = 3600 + Math.floor(Math.random() * 360);
+      wheel.style.transition = 'transform 4s ease-out';
+      wheel.style.transform = `rotate(${giro}deg)`;
 
-        (function frame() {
-          confetti({
-            particleCount: 5,
-            angle: 60,
-            spread: 55,
-            origin: { x: 0 }
-          });
-          confetti({
-            particleCount: 5,
-            angle: 120,
-            spread: 55,
-            origin: { x: 1 }
-          });
-          if (Date.now() < end) {
-            requestAnimationFrame(frame);
-          }
-        })();
-      };
-      document.body.appendChild(js);
+      setTimeout(() => {
+        const grauFinal = giro % 360;
+        const indexPremio = Math.floor((360 - grauFinal) / (360 / premios.length)) % premios.length;
+        const premioFinal = premios[indexPremio];
+
+        result.innerHTML = `🎉 Você ganhou <strong>${premioFinal.toLocaleString()} MTS</strong>!`;
+
+        setTimeout(() => {
+          window.location.href = "https://tracking.888africa.com/visit/?bta=36867&brand=888mozambique";
+        }, 3000);
+      }, 4000);
     }
 
-    function iniciarTudo() {
-      gerarPremio();
-      iniciarCronometro();
-      gerarGanhadores();
-      iniciarConfetes();
-    }
-  </script>
-</body>
+    desenharRoda();
+    spinBtn.addEventListener('click', girarRoda);
+  </script></body>
 </html>

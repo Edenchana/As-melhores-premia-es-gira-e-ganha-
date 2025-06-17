@@ -34,6 +34,7 @@
       padding-right: 20px;
       font-weight: bold;
       line-height: 300px;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
     }
     #arrow {
       width: 0;
@@ -64,6 +65,24 @@
       border: 2px solid #ccc;
       border-radius: 10px;
     }
+    #loginBox {
+      display: none;
+      margin-top: 20px;
+    }
+    #loginBox input {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    #loginBtn {
+      background-color: #008CBA;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -71,14 +90,19 @@
   <div id="arrow"></div>
   <div id="wheel"></div>
   <button id="spinBtn">🎯 Clique para Girar</button>
-  <div id="result"></div>  <img src="https://i.imgur.com/0KZQ0nV.png" alt="Ganhadores recentes" class="winners-img">  <script>
-    const premios = [
-      5000, 7500, 8800, 9999, 12500, 15000
-    ];
+  <div id="result"></div>  <div id="loginBox">
+    <p><strong>Inicie sessão para receber seu prêmio</strong></p>
+    <input type="text" id="username" placeholder="Nome" />
+    <input type="email" id="email" placeholder="Email" />
+    <button id="loginBtn">Receber Prêmio</button>
+  </div>  <img src="https://i.imgur.com/o9K2pAf.png" alt="Ganhadores recentes" class="winners-img">  <script>
+    const premios = [5000, 7500, 8800, 9999, 12500, 15000];
 
     const wheel = document.getElementById('wheel');
     const result = document.getElementById('result');
     const spinBtn = document.getElementById('spinBtn');
+    const loginBox = document.getElementById('loginBox');
+    const loginBtn = document.getElementById('loginBtn');
 
     function desenharRoda() {
       for (let i = 0; i < premios.length; i++) {
@@ -103,14 +127,21 @@
         const premioFinal = premios[indexPremio];
 
         result.innerHTML = `🎉 Você ganhou <strong>${premioFinal.toLocaleString()} MTS</strong>!`;
-
-        setTimeout(() => {
-          window.location.href = "https://tracking.888africa.com/visit/?bta=36867&brand=888mozambique";
-        }, 3000);
+        loginBox.style.display = 'block';
       }, 4000);
     }
 
     desenharRoda();
     spinBtn.addEventListener('click', girarRoda);
+
+    loginBtn.addEventListener('click', () => {
+      const nome = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      if (nome && email) {
+        window.location.href = "https://tracking.888africa.com/visit/?bta=36867&brand=888mozambique";
+      } else {
+        alert("Por favor, preencha seu nome e email.");
+      }
+    });
   </script></body>
 </html>

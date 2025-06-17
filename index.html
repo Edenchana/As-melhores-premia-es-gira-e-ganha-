@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prêmio Especial - Confirme Agora</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #ffffff, #e0ffe0);
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      display: inline-block;
+    }
+    h1 {
+      color: #4CAF50;
+      font-size: 28px;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 15px 30px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+    .emoji {
+      font-size: 50px;
+    }
+    #cronometro {
+      font-size: 20px;
+      color: red;
+      margin: 10px 0;
+    }
+    .ganhadores {
+      text-align: left;
+      margin-top: 30px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .confete {
+      position: fixed;
+      width: 100%;
+      height: 0;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body onload="iniciarTudo()">
+  <canvas class="confete" id="confete"></canvas>
+  <div class="container">
+    <div class="emoji">🎉</div>
+    <h1>Parabéns!</h1>
+    <p>Você foi selecionado para receber <strong id="premio">...</strong></p>
+    <div id="cronometro">Tempo restante: <span id="tempo">30</span>s</div>
+    <a href="https://tracking.888africa.com/visit/?bta=36867&brand=888mozambique" class="btn">Receber meu prêmio</a>
+
+    <div class="ganhadores">
+      <strong>Ganhadores recentes:</strong><br />
+      <ul id="lista-ganhadores"></ul>
+    </div>
+  </div>
+
+  <script>
+    function gerarPremio() {
+      var premio = Math.floor(Math.random() * 15000) + 5000;
+      document.getElementById("premio").innerText = premio.toLocaleString() + " MTS";
+    }
+
+    function iniciarCronometro() {
+      let tempo = 30;
+      const el = document.getElementById("tempo");
+      const intervalo = setInterval(() => {
+        tempo--;
+        el.textContent = tempo;
+        if (tempo <= 0) {
+          clearInterval(intervalo);
+          el.textContent = "expirado!";
+        }
+      }, 1000);
+    }
+
+    function gerarGanhadores() {
+      const nomes = ["Carlos M.", "Ana P.", "Mário L.", "Tatiana F.", "João K.", "Vera M.", "André T.", "Sandra C."];
+      const ul = document.getElementById("lista-ganhadores");
+      for (let i = 0; i < 5; i++) {
+        const valor = (Math.floor(Math.random() * 10000) + 5000).toLocaleString();
+        const nome = nomes[Math.floor(Math.random() * nomes.length)];
+        const li = document.createElement("li");
+        li.textContent = `${nome} recebeu ${valor} MTS`;
+        ul.appendChild(li);
+      }
+    }
+
+    function iniciarConfetes() {
+      const js = document.createElement("script");
+      js.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js";
+      js.onload = () => {
+        const duration = 3 * 1000;
+        const end = Date.now() + duration;
+
+        (function frame() {
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 }
+          });
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 }
+          });
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        })();
+      };
+      document.body.appendChild(js);
+    }
+
+    function iniciarTudo() {
+      gerarPremio();
+      iniciarCronometro();
+      gerarGanhadores();
+      iniciarConfetes();
+    }
+  </script>
+</body>
+</html>
